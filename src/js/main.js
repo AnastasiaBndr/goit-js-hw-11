@@ -19,6 +19,8 @@ function onClick(evt) {
   refs.gallery.innerHTML = '';
   var text = refs.input.value;
 
+  jsonplaceholderInstance.query=text;
+
   jsonplaceholderInstance
     .fetchImages()
     .then(cards => {

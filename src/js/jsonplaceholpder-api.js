@@ -3,15 +3,33 @@ import Notiflix from 'notiflix';
 
 export class JSONPlaceholderAPI {
   
-    #BASE_URL = 'https://pixabay.com/';
-    #API_KEY = 'api/?key=38590711-cd4e1138b2603dfebaf6d7de9';
+    #BASE_URL = 'https://pixabay.com/api/?';
+    #API_KEY = '38590711-cd4e1138b2603dfebaf6d7de9';
 
   limit = 10;
   page=1;
+  query = null;
+
+  baseSearchParams = {
+    key: this.#API_KEY,
+    per_page: this.limit, 
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+  }
 
   fetchImages() {
+
+    const searchParams=new URLSearchParams({
+        ...this.baseSearchParams,
+        q: this.query,
+        page: this.page,
+        
+    });
+
+    console.log(searchParams.toString());
     return axios
-      .get(`${this.#BASE_URL + this.#API_KEY}&per_page=${this.limit}&page=${this.page}`)
+      .get(`${this.#BASE_URL + searchParams.toString()}`)
       .then(resp => {
         return resp.data;
       })
