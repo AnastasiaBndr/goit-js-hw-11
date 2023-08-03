@@ -1,1 +1,0 @@
-{"mappings":"AAAAA,EAAE,kBAAkBC,OAAM,WACtBD,EAAEE,MAAMC,SAASC,YAAY,O","sources":["src/js/button.js"],"sourcesContent":["$('.search-button').click(function(){\n    $(this).parent().toggleClass('open');\n  });"],"names":["$","click","this","parent","toggleClass"],"version":3,"file":"index.6e5d5ae0.js.map"}
