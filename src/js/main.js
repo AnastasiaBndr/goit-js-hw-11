@@ -1,56 +1,36 @@
-import axios from 'axios';
-import Notiflix from 'notiflix';
-
-const API_KEY = 'api/?key=38590711-cd4e1138b2603dfebaf6d7de9';
-const URL = 'https://pixabay.com/';
+import { JSONPlaceholderAPI } from './jsonplaceholpder-api';
 
 const refs = {
   button: document.querySelector('.submit-button'),
   gallery: document.querySelector('.gallery'),
   input: document.querySelector('.search-box'),
+  loadMore: document.querySelector('.load-more-button'),
 };
 
-function fetchImages(pages) {
-  return axios
-    .get(URL + API_KEY + pages)
-    .then(resp => {
-      return resp.data;
-    })
-    .catch(err =>
-      Notiflix.Report.failure(
-        'Server Error!',
-        'There is something wrong..',
-        'Okaaay'
-      )
-    );
-}
+const jsonplaceholderInstance = new JSONPlaceholderAPI();
 
 refs.button.addEventListener('click', onClick);
+refs.loadMore.addEventListener('click', handleLoadMoreButtonClick);
+
+const POST_COUNT=500;
 
 function onClick(evt) {
+  jsonplaceholderInstance.page=1;
   refs.gallery.innerHTML = '';
   var text = refs.input.value;
 
-  const pages = '&page=';
-  const totalHits = 500;
-  const perpage = 20;
-
-  for (var i = 1; i < totalHits / perpage; i++) {
-    fetchImages(pages + i).then(cards => {
-      for (let i = 0; i < cards.hits.length; i++) {
-        if (cards.hits[i].tags.includes(text)) {
-          refs.gallery.insertAdjacentHTML(
-            'beforeend',
-            `${renderCard(cards.hits[i])}`
-          );
-        }
-      }
-    });
-  }
+  jsonplaceholderInstance
+    .fetchImages()
+    .then(cards => {refs.gallery.innerHTML = renderCard(cards.hits);
+    refs.loadMore.classList.remove("load-more-hidden")})
+    .catch(err => console.log);
 }
 
-function renderCard(card) {
-  return `<div class="photo-card">
+function renderCard(cards) {
+  return cards
+    .map(
+      card =>
+        `<div class="photo-card">
   <figure style="background-image: url('${card.webformatURL}');">
   </figure>
     <div class="info">
@@ -67,5 +47,20 @@ function renderCard(card) {
         <b>Downloads: </b>${card.downloads}
       </p>
     </div>
-  </div>`;
+  </div>`
+    )
+    .join('');
+}
+
+function handleLoadMoreButtonClick (){
+
+    jsonplaceholderInstance.page+=1;
+    if(jsonplaceholderInstance.getLimit()*jsonplaceholderInstance.page>=POST_COUNT){
+      refs.loadMore.classList.add("load-more-hidden")
+    }
+
+    jsonplaceholderInstance
+    .fetchImages()
+    .then(cards => {refs.gallery.insertAdjacentHTML("beforeend",renderCard(cards.hits));})
+    .catch(err => console.log);
 }

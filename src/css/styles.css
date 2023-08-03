@@ -16,7 +16,19 @@ button {
   outline: inherit;
 }
 
-.submit-button {
+
+
+.load-more-button {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 120px;
+}
+
+.load-more-hidden {
+  display: none;
+}
+.submit-button,
+.load-more-button {
   height: 50px;
   width: 150px;
   background-color: #242628;
@@ -25,7 +37,9 @@ button {
 }
 
 .submit-button:focus,
-.submit-button:hover {
+.submit-button:hover,
+.load-more-button:focus,
+.load-more-button:hover {
   background-color: #757575;
   color: #242628;
 }
