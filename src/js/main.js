@@ -12,17 +12,19 @@ const jsonplaceholderInstance = new JSONPlaceholderAPI();
 refs.button.addEventListener('click', onClick);
 refs.loadMore.addEventListener('click', handleLoadMoreButtonClick);
 
-const POST_COUNT=500;
+const POST_COUNT = 500;
 
 function onClick(evt) {
-  jsonplaceholderInstance.page=1;
+  jsonplaceholderInstance.page = 1;
   refs.gallery.innerHTML = '';
   var text = refs.input.value;
 
   jsonplaceholderInstance
     .fetchImages()
-    .then(cards => {refs.gallery.innerHTML = renderCard(cards.hits);
-    refs.loadMore.classList.remove("load-more-hidden")})
+    .then(cards => {
+      refs.gallery.innerHTML = renderCard(cards.hits);
+      refs.loadMore.classList.remove('load-more-hidden');
+    })
     .catch(err => console.log);
 }
 
@@ -52,15 +54,18 @@ function renderCard(cards) {
     .join('');
 }
 
-function handleLoadMoreButtonClick (){
+function handleLoadMoreButtonClick() {
+  jsonplaceholderInstance.page += 1;
 
-    jsonplaceholderInstance.page+=1;
-    if(jsonplaceholderInstance.getLimit()*jsonplaceholderInstance.page>=POST_COUNT){
-      refs.loadMore.classList.add("load-more-hidden")
-    }
+  const { limit, page } = jsonplaceholderInstance;
+  if (limit * page >= POST_COUNT) {
+    refs.loadMore.classList.add('load-more-hidden');
+  }
 
-    jsonplaceholderInstance
+  jsonplaceholderInstance
     .fetchImages()
-    .then(cards => {refs.gallery.insertAdjacentHTML("beforeend",renderCard(cards.hits));})
+    .then(cards => {
+      refs.gallery.insertAdjacentHTML('beforeend', renderCard(cards.hits));
+    })
     .catch(err => console.log);
 }
