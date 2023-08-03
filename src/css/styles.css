@@ -16,7 +16,10 @@ button {
   outline: inherit;
 }
 
-
+button:active {
+  background-color: #00fede;
+  color: #242628;
+}
 
 .load-more-button {
   display: block;
@@ -34,14 +37,6 @@ button {
   background-color: #242628;
   color: #00fede;
   font-size: 140%;
-}
-
-.submit-button:focus,
-.submit-button:hover,
-.load-more-button:focus,
-.load-more-button:hover {
-  background-color: #757575;
-  color: #242628;
 }
 
 .header {
