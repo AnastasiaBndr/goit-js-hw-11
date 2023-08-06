@@ -6,7 +6,7 @@ export class JSONPlaceholderAPI {
     #BASE_URL = 'https://pixabay.com/api/?';
     #API_KEY = '38590711-cd4e1138b2603dfebaf6d7de9';
 
-  limit = 10;
+  limit = 40;
   page=1;
   query = null;
 

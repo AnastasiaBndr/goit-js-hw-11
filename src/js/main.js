@@ -17,36 +17,43 @@ const jsonplaceholderInstance = new JSONPlaceholderAPI();
 refs.button.addEventListener('click', onClick);
 refs.loadMore.addEventListener('click', handleLoadMoreButtonClick);
 
-const POST_COUNT = 500;
-
-
 function onClick(evt) {
   jsonplaceholderInstance.page = 1;
   refs.gallery.innerHTML = '';
-  var text = refs.input.value;
+  var text = refs.input.value.trim();
 
-  if (text === '') Notiflix.Notify.failure('You didn`t wrote anything(');
-  else {
+  if (text === '') {
+    refs.loadMore.classList.add('load-more-hidden');
+    Notiflix.Notify.failure('You didn`t wrote anything(');
+  } else {
     jsonplaceholderInstance.query = text;
 
     jsonplaceholderInstance
       .fetchImages()
       .then(cards => {
         refs.gallery.innerHTML = renderCard(cards.hits);
-        if (refs.gallery.innerHTML === '')
+        if (refs.gallery.innerHTML === '') {
           Notiflix.Notify.failure('No images found(');
-        else {
+          refs.loadMore.classList.add('load-more-hidden');
+        } else {
           Notiflix.Notify.success(`We found ${cards.totalHits} images~`);
+          const { limit, page } = jsonplaceholderInstance;
+          if(cards.totalHits/limit <= page){
+            refs.loadMore.classList.add('load-more-hidden');
+          }else{
+            refs.loadMore.classList.remove('load-more-hidden');
+          }
           lightbox = new SimpleLightbox('.gallery a', {
             captions: true,
             captionsData: 'alt',
             captionSelector: 'img',
             captionPosition: 'outside',
             CaptionDelay: '150ms',
-            scaleImageToRatio: true
+            scaleImageToRatio: true,
           });
-          refs.loadMore.classList.remove('load-more-hidden');
-        }})
+          
+        }
+      })
       .catch(err => console.log);
   }
 }
@@ -82,17 +89,17 @@ function handleLoadMoreButtonClick() {
   jsonplaceholderInstance.page += 1;
 
   const { limit, page } = jsonplaceholderInstance;
-  if (limit * page >= POST_COUNT) {
-    refs.loadMore.classList.add('load-more-hidden');
-    Notiflix.Notify.info('You`ve seen all we prepared ^_^');
-  }
 
   jsonplaceholderInstance
     .fetchImages()
     .then(cards => {
       refs.gallery.insertAdjacentHTML('beforeend', renderCard(cards.hits));
+      console.log(`Total hits = ${cards.totalHits}\n limit = ${limit} \n page = ${page}`);
+      if (limit * page >= cards.totalHits || cards.totalHits === 0) {
+        refs.loadMore.classList.add('load-more-hidden');
+        Notiflix.Notify.info('You`ve seen all we prepared ^_^');
+      }
       lightbox.refresh();
     })
     .catch(err => console.log);
 }
-
